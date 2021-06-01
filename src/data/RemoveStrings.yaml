@@ -12,6 +12,14 @@ Movies:
     - ".2160p.WEB-DL.x265.10bit.HDR.DDP5.1-NOGRP"
     - ".1080p.AMZN.WEBRip.DDP5.1.Atmos.x264-NTb"
     - ".1080p.AMZN.WEB-DL.DDP5.1.Atmos.H.264-NTb"
+    - ".1080p.BrRip.x264.YIFY"
+    - ".1080p.HC.HDRip.X264.AC3-EVO"
+    - ".1080p.BrRip.x264.YIFY"
+    - ".1080p.BluRay.x264.YIFY"
+    - ".1080p.BrRip.x264.YIFY+HI"
+    - ".1080p.BluRay.H264.AAC-RARBG"
+    - ".1080p.BrRip.x264.YIFY"
+    - ".1080p.BluRay.H264.AAC-RARBG"
 
 TV-Shows:
     - ".720p.5.1Ch.BluRay.ReEnc-DeeJayAhmed"
@@ -53,3 +61,5 @@ TV-Shows:
     - ".720p.hdtv.x264-syncopy"
     - ".720p.HDTV.x265-MiNX"
     - ".WEB.x264-PHOENiX"
+    - "[eztv.re]"
+    - ".720p.WEB.h264-BAE"
