@@ -20,6 +20,9 @@ Movies:
     - ".1080p.BluRay.H264.AAC-RARBG"
     - ".1080p.BrRip.x264.YIFY"
     - ".1080p.BluRay.H264.AAC-RARBG"
+    - ".720p.BluRay.x264.YIF"
+    - ".1080p.WEB-DL.DD5.1.H.264-"
+    - ".1080p.web.h264-ggez"
 
 TV-Shows:
     - ".720p.5.1Ch.BluRay.ReEnc-DeeJayAhmed"
@@ -63,3 +66,4 @@ TV-Shows:
     - ".WEB.x264-PHOENiX"
     - "[eztv.re]"
     - ".720p.WEB.h264-BAE"
+    - ".1080p.AMZN.WEB-DL.DDP5.1.H.264-NTb"
