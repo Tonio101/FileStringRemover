@@ -8,6 +8,18 @@ import sys
 PATTERNS_FILE = os.path.dirname(os.path.abspath(__file__)) \
     + '/data/patterns.conf'
 
+SUBTITLE_MAP = dict(
+    English=".en.srt",
+    Spanish=".es.srt",
+)
+
+SUPPORTED_SUBTITLES = dict(
+    English=False,
+    Spanish=False
+)
+
+SUPPORTED_FILE_TYPES = ['.mp4', '.mkv']
+
 
 def get_path_and_file_patterns(args):
     if (not args):
@@ -98,9 +110,9 @@ def compare(e0, e1):
 
 def rename_subtile_files(fpath, new_fname, list_of_fnames, patterns):
     # TODO - Make this a bit more generic. Right now I only
-    #        about English and Spanish subtitles
-    found_en_sub = False
-    found_es_sub = False
+    #        care about English and Spanish subtitles
+    # found_en_sub = False
+    # found_es_sub = False
 
     # Pick the smallest number subtitle.
     # Sometimes there are 2 files for the same language.
@@ -109,20 +121,54 @@ def rename_subtile_files(fpath, new_fname, list_of_fnames, patterns):
         for pattern in patterns['subtitle']:
             r = pattern.findall(fname)
             if (r):
-                if not found_en_sub and "English" in fname:
-                    curr_subtitle_fname = fpath + "/" + r[0]
-                    new_subtile_fname = new_fname.replace(".mp4", ".en.srt", 1)
-                    print(curr_subtitle_fname)
-                    print(new_subtile_fname)
-                    os.rename(curr_subtitle_fname, new_subtile_fname)
-                    found_en_sub = True
-                elif not found_es_sub and "Spanish" in fname:
-                    curr_subtitle_fname = fpath + "/" + r[0]
-                    new_subtile_fname = new_fname.replace(".mp4", ".es.srt", 1)
-                    print(curr_subtitle_fname)
-                    print(new_subtile_fname)
-                    os.rename(curr_subtitle_fname, new_subtile_fname)
-                    found_es_sub = True
+
+                for type, found in SUPPORTED_SUBTITLES.items():
+                    if not found and type in fname:
+                        file_type = SUBTITLE_MAP[type]
+                        curr_subtitle_fname = fpath + "/" + r[0]
+                        new_subtile_fname = None
+
+                        for ext in SUPPORTED_FILE_TYPES:
+                            if ext in new_fname:
+                                new_subtile_fname = \
+                                    new_fname.replace(ext, file_type, 1)
+
+                        print(curr_subtitle_fname)
+                        print(new_subtile_fname)
+                        if new_subtile_fname:
+                            os.rename(curr_subtitle_fname, new_subtile_fname)
+                            SUPPORTED_SUBTITLES[type] = True
+
+                # if not found_en_sub and "English" in fname:
+                #    file_type = SUBTITLE_MAP["English"]
+                #    curr_subtitle_fname = fpath + "/" + r[0]
+                #    new_subtile_fname = None
+
+                #    for ext in SUPPORTED_FILE_TYPES:
+                #        if ext in new_fname:
+                #            new_subtile_fname = \
+                #                new_fname.replace(ext, file_type, 1)
+
+                #    print(curr_subtitle_fname)
+                #    print(new_subtile_fname)
+                #    if new_subtile_fname:
+                #        os.rename(curr_subtitle_fname, new_subtile_fname)
+                #        found_en_sub = True
+                # elif not found_es_sub and "Spanish" in fname:
+                #    file_type = SUBTITLE_MAP["Spanish"]
+                #    curr_subtitle_fname = fpath + "/" + r[0]
+                #    new_subtile_fname = None
+
+                #    for ext in SUPPORTED_FILE_TYPES:
+                #        if ext in new_fname:
+                #            new_subtile_fname = \
+                #                new_fname.replace(ext, file_type, 1)
+
+                #    print(curr_subtitle_fname)
+                #    print(new_subtile_fname)
+                #    if new_subtile_fname:
+                #        os.rename(curr_subtitle_fname, new_subtile_fname)
+                #        found_es_sub = True
 
 
 def remove_string_from_files(fpath, patterns, force=False, replace_str=""):
@@ -138,6 +184,27 @@ def remove_string_from_files(fpath, patterns, force=False, replace_str=""):
             new_fname = \
                 rename_file_name(fpath, strip_str, fname, force, replace_str)
             rename_subtile_files(fpath, new_fname, list_of_fnames, patterns)
+
+
+def delete_left_over_subtitle_files(fpath, patterns, force=False):
+    if (not os.path.exists(fpath)):
+        print("{0} path does not exist".format(fpath))
+        exit(2)
+
+    list_of_fnames = os.listdir(fpath)
+    for fname in list_of_fnames:
+        for pattern in patterns['subtitle']:
+            r = pattern.findall(fname)
+            if r:
+                print("Delete: {} ".format(
+                    (fpath + "/" + fname)
+                ))
+                if force:
+                    os.remove(fpath + "/" + fname)
+
+
+def delete_unused_files(fpath, patterns, force=False):
+    delete_left_over_subtitle_files(fpath, patterns, force)
 
 
 def main(argv):
@@ -163,6 +230,9 @@ def main(argv):
     remove_string_from_files(fpath=files_path, patterns=file_patterns,
                              force=True if args.force else False,
                              replace_str=args.replace if args.replace else "")
+
+    delete_unused_files(fpath=files_path, patterns=file_patterns,
+                        force=True if args.force else False)
 
 
 if __name__ == '__main__':
