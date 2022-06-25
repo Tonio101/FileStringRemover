@@ -5,6 +5,8 @@ import os
 import re
 import sys
 
+from time import sleep
+
 PATTERNS_FILE = os.path.dirname(os.path.abspath(__file__)) \
     + '/data/patterns.conf'
 
@@ -191,16 +193,16 @@ def delete_left_over_subtitle_files(fpath, patterns, force=False):
         print("{0} path does not exist".format(fpath))
         exit(2)
 
-    list_of_fnames = os.listdir(fpath)
-    for fname in list_of_fnames:
-        for pattern in patterns['subtitle']:
+    for pattern in patterns['subtitle']:
+        for fname in os.listdir(fpath):
             r = pattern.findall(fname)
             if r:
+                file_to_remove = fpath + "/" + fname
                 print("Delete: {} ".format(
-                    (fpath + "/" + fname)
+                    (file_to_remove)
                 ))
-                if force:
-                    os.remove(fpath + "/" + fname)
+                if force and os.path.isfile(file_to_remove):
+                    os.remove(file_to_remove)
 
 
 def delete_unused_files(fpath, patterns, force=False):
@@ -225,14 +227,16 @@ def main(argv):
                         help="strip string without approval.", required=False)
     args = parser.parse_args()
 
+    force_rename = (True if args.force else False)
+
     (files_path, file_patterns) = get_path_and_file_patterns(args)
 
     remove_string_from_files(fpath=files_path, patterns=file_patterns,
-                             force=True if args.force else False,
+                             force=force_rename,
                              replace_str=args.replace if args.replace else "")
 
     delete_unused_files(fpath=files_path, patterns=file_patterns,
-                        force=True if args.force else False)
+                        force=force_rename)
 
 
 if __name__ == '__main__':
